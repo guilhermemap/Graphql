@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>GraphQL Query Example</title>
+    <link href="css/prism.css" rel="stylesheet" />
+  </head>
+  <body>
+    <pre><code class="language-json" id="code"></code></pre>
+    <script src="js/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.13.0/beautify.js"></script>
+    <script>
+      (async function () {
+        const data = JSON.stringify({
+          query: `{
+                categoryList(filters: {ids: {in: ["3","3607","3610","3679","3710"]}}) {
+                    name
+                    url_path
+                    children_count
+                    children {
+                        name      
+                        url_path
+                    }
+                }
+            }`,
+        });
+
+        const response = await fetch("http://40.74.246.212/graphql", {
+          method: "post",
+          body: data,
+          headers: {
+            "Content-Type": "application/json",
+            "Content-Length": data.length,
+            "User-Agent": "Node",
+          },
+        });
+
+        const json = await response.json();
+        document.getElementById("code").innerHTML = js_beautify(
+          JSON.stringify(json.data)
+        );
+        Prism.highlightAll();
+      })();
+    </script>
+  </body>
+</html>
